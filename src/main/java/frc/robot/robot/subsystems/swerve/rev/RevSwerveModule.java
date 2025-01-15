@@ -96,7 +96,7 @@ public class RevSwerveModule implements SwerveModule
         SparkMaxConfig motorConfig = new SparkMaxConfig();
         ClosedLoopConfig controller = new ClosedLoopConfig();
         
-        //mAngleMotor.restoreFactoryDefaults();
+        mAngleMotor.configure(motorConfig, ResetMode.kResetSafeParameters, null);
         controller.pidf(RevSwerveConfig.angleKP, RevSwerveConfig.angleKI, RevSwerveConfig.angleKD,RevSwerveConfig.angleKF);
         controller.outputRange(-RevSwerveConfig.anglePower, RevSwerveConfig.anglePower);
        
@@ -112,7 +112,7 @@ public class RevSwerveModule implements SwerveModule
         SparkMaxConfig motorConfig = new SparkMaxConfig();
         ClosedLoopConfig controller = new ClosedLoopConfig();
         
-        //mDriveMotor.restoreFactoryDefaults();
+        mDriveMotor.configure(motorConfig, ResetMode.kResetSafeParameters, null);
         controller.pidf(RevSwerveConfig.driveKP, RevSwerveConfig.driveKI, RevSwerveConfig.driveKD,RevSwerveConfig.driveKF);
         controller.outputRange(-RevSwerveConfig.drivePower, RevSwerveConfig.drivePower);
        
