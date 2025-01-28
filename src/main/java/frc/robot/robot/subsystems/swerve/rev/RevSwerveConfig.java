@@ -29,7 +29,7 @@ public class RevSwerveConfig
     public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
 
     public static final COTSNeoSwerveConstants chosenModule =  
-        COTSNeoSwerveConstants.SDSMK4i(COTSNeoSwerveConstants.driveGearRatios.SDSMK4i_L2);
+        COTSNeoSwerveConstants.SDSMK4i(COTSNeoSwerveConstants.driveGearRatios.SDSMK4_L2);
 
     /* Drivetrain Constants */
     public static final double trackWidth = Units.inchesToMeters(23.75); 
