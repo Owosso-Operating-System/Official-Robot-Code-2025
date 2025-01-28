@@ -30,12 +30,11 @@ public class RevSwerveModule implements SwerveModule
 {
     public int moduleNumber;
     private Rotation2d rotOffset;
-   // private Rotation2d lastAngle;
+    private Rotation2d lastAngle;
 
     private SparkMax mAngleMotor;
     private SparkMax mDriveMotor;
 
-    private CANcoder angleEncoder;
     private RelativeEncoder relAngleEncoder;
     private RelativeEncoder relDriveEncoder;
     private SwerveModuleState m_desiredState;
@@ -57,12 +56,9 @@ public class RevSwerveModule implements SwerveModule
         configDriveMotor();
 
          /* Angle Encoder Config */
-    
-        angleEncoder = new CANcoder(moduleConstants.cancoderID);
         configEncoders();
 
-
-       // lastAngle = getState().angle;
+        lastAngle = getState().angle;
     }
 
 
@@ -70,7 +66,6 @@ public class RevSwerveModule implements SwerveModule
     {     
         SparkMaxConfig motorConfig = new SparkMaxConfig();
         // absolute encoder   
-        angleEncoder.getConfigurator().apply(new CANcoderConfiguration());
         //angleEncoder.configAllSettings(new RevSwerveConfig().canCoderConfig);
        
         relDriveEncoder = mDriveMotor.getEncoder();
@@ -85,7 +80,7 @@ public class RevSwerveModule implements SwerveModule
         motorConfig.encoder.positionConversionFactor(RevSwerveConfig.DegreesPerTurnRotation);
         // in degrees/sec
         motorConfig.encoder.velocityConversionFactor(RevSwerveConfig.DegreesPerTurnRotation / 60);
-    
+        
         resetToAbsolute();
         //mDriveMotor.burnFlash();
         //mAngleMotor.burnFlash();    
@@ -127,7 +122,6 @@ public class RevSwerveModule implements SwerveModule
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop)
     {
-        
         
         /* This is a custom optimize function, since default WPILib optimize assumes continuous controller which CTRE and Rev onboard is not */
         // CTREModuleState actually works for any type of motor.
@@ -203,8 +197,7 @@ public class RevSwerveModule implements SwerveModule
 
     public Rotation2d getCANcoder()
     {
-        return Rotation2d.fromRotations(angleEncoder.getAbsolutePosition().getValueAsDouble());
-        //return getAngle();
+        return getAngle();
     }
 
     public int getModuleNumber() 
@@ -219,9 +212,11 @@ public class RevSwerveModule implements SwerveModule
 
     private void resetToAbsolute()
     {
-    
-        double absolutePosition =getCANcoder().getDegrees() - rotOffset.getDegrees();
-        relAngleEncoder.setPosition(absolutePosition);
+        double angleAbsolutePosition = relAngleEncoder.getPosition() - rotOffset.getDegrees();
+        relAngleEncoder.setPosition(angleAbsolutePosition);
+
+        double driveAbsolutePosition = relDriveEncoder.getPosition() - rotOffset.getDegrees();
+        relDriveEncoder.setPosition(driveAbsolutePosition);
     }
 
   

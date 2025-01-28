@@ -12,7 +12,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 
 
-public class TeleopSwerve extends Command {    
+public class TeleopSwerve extends Command {   
+    
+    @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+
     private RevSwerve s_Swerve;    
     private DoubleSupplier translationSup;
     private DoubleSupplier strafeSup;
