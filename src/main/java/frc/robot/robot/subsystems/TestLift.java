@@ -25,6 +25,8 @@ public class TestLift extends SubsystemBase {
       liftLConfig = new SparkMaxConfig();
       liftRConfig = new SparkMaxConfig();
 
+      liftRConfig.inverted(true);
+
       liftL.configure(liftLConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
       liftR.configure(liftRConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 

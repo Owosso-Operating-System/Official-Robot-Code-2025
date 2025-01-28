@@ -30,8 +30,10 @@ public class LiftCommand extends Command {
   public void execute() {
     if(controller1.getRawAxis(4) > 0.1){
       testLift.liftL.set(controller1.getRawAxis(4) * 0.5);
+      testLift.liftR.set(controller1.getRawAxis(4) * 0.5);
     }else if(controller1.getRawAxis(4) < -0.1){
-      testLift.liftR.set(controller1.getRawAxis(4) * -0.5);
+      testLift.liftL.set(controller1.getRawAxis(4) * 0.5);
+      testLift.liftR.set(controller1.getRawAxis(4) * 0.5);
     }else{
       testLift.liftL.set(0);
       testLift.liftR.set(0);
