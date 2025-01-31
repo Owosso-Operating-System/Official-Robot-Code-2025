@@ -82,13 +82,13 @@ public class RevSwerveConfig
     public static final double closedLoopRamp = 0.0;
 
     /* Angle Motor PID Values */
-    public static final double angleKP = 0.05;
-    public static final double angleKI = 0;
-    public static final double angleKD = 0;
+    public static final double angleKP = 0;
+    public static final double angleKI = 0.0;
+    public static final double angleKD = 0.0;
     public static final double angleKF = 0;
 
     /* Drive Motor PID Values */
-    public static final double driveKP = 0.05; 
+    public static final double driveKP = 0.0; 
     public static final double driveKI = 0.0;
     public static final double driveKD = 0.0;
     public static final double driveKF = 0.0;

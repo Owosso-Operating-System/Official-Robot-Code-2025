@@ -4,6 +4,7 @@ package frc.robot.robot.subsystems.swerve.rev;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 //import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 //import com.revrobotics.SparkMaxLowLevel.MotorType;
@@ -12,6 +13,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.AbsoluteEncoderConfig;
 //import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -30,11 +32,12 @@ public class RevSwerveModule implements SwerveModule
 {
     public int moduleNumber;
     private Rotation2d rotOffset;
-    private Rotation2d lastAngle;
+    //private Rotation2d lastAngle;
 
     private SparkMax mAngleMotor;
     private SparkMax mDriveMotor;
 
+    private CANcoder angleEncoder;
     private RelativeEncoder relAngleEncoder;
     private RelativeEncoder relDriveEncoder;
     private SwerveModuleState m_desiredState;
@@ -56,22 +59,29 @@ public class RevSwerveModule implements SwerveModule
         configDriveMotor();
 
          /* Angle Encoder Config */
+        angleEncoder = new CANcoder(moduleConstants.cancoderID);
         configEncoders();
 
-        lastAngle = getState().angle;
+        //lastAngle = getState().angle;
     }
 
 
     private void configEncoders()
     {     
-        SparkMaxConfig motorConfig = new SparkMaxConfig();
-        // absolute encoder   
+        // absolute encoder  
+        CANcoderConfiguration coderConfig = new CANcoderConfiguration();
+
+        coderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+
+        angleEncoder.getConfigurator().apply(coderConfig);
+        angleEncoder.setPosition(0);
         //angleEncoder.configAllSettings(new RevSwerveConfig().canCoderConfig);
-       
+        SparkMaxConfig motorConfig = new SparkMaxConfig();
+
         relDriveEncoder = mDriveMotor.getEncoder();
         relDriveEncoder.setPosition(0);
+        
 
-         
         motorConfig.encoder.positionConversionFactor(RevSwerveConfig.driveRevToMeters);
         motorConfig.encoder.velocityConversionFactor(RevSwerveConfig.driveRpmToMetersPerSecond);
 
