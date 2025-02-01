@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.robot.commands.*;
+import frc.robot.robot.subsystems.Intake;
+import frc.robot.robot.subsystems.TestLift;
 import frc.robot.robot.subsystems.swerve.rev.RevSwerve;
 
 /**
@@ -18,7 +20,8 @@ import frc.robot.robot.subsystems.swerve.rev.RevSwerve;
  */
 public class RobotContainer {
     /* Controllers */
-    private final Joystick driver = new Joystick(0);
+    private final XboxController driveController = new XboxController(0);
+    private final XboxController auxiliaryController = new XboxController(1);   
 
     /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -26,23 +29,31 @@ public class RobotContainer {
     private final int rotationAxis = XboxController.Axis.kRightX.value;
 
     /* Driver Buttons */
-    private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
+    private final JoystickButton zeroGyro = new JoystickButton(driveController, XboxController.Button.kY.value);
+
+    /* Auxiliary Buttons */
+    private final JoystickButton intakeIn = new JoystickButton(auxiliaryController, XboxController.Button.kA.value);
+    private final JoystickButton intakeOut = new JoystickButton(auxiliaryController, XboxController.Button.kB.value);
 
     /* Subsystems */
     private final RevSwerve s_Swerve = new RevSwerve();
-
+    private final TestLift liftSub = new TestLift();
+    private final Intake intakeSub = new Intake();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
+
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve, 
-                () -> -driver.getRawAxis(translationAxis), 
-                () -> -driver.getRawAxis(strafeAxis), 
-                () -> -driver.getRawAxis(rotationAxis), 
+                () -> -driveController.getRawAxis(translationAxis), 
+                () -> -driveController.getRawAxis(strafeAxis), 
+                () -> -driveController.getRawAxis(rotationAxis), 
                 () -> false
             )
         );
+
+        liftSub.setDefaultCommand(new LiftCommand(liftSub, auxiliaryController));
 
         // Configure the button bindings
         configureButtonBindings();
@@ -57,6 +68,10 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+
+        /*Auxiliary Buttons */
+        //intakeIn.onTrue(new );
+        //intakeOut.onTrue(new );
     }
 
     /**
