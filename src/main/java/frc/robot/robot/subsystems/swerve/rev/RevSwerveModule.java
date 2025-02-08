@@ -124,7 +124,13 @@ public class RevSwerveModule implements SwerveModule
         controller.pidf(RevSwerveConfig.driveKP, RevSwerveConfig.driveKI, RevSwerveConfig.driveKD,RevSwerveConfig.driveKF);
         controller.outputRange(-RevSwerveConfig.drivePower, RevSwerveConfig.drivePower);
        
-        motorConfig.inverted(RevSwerveConfig.driveMotorInvert);
+        if(moduleNumber == 1 || moduleNumber == 3){
+            motorConfig.inverted(true);
+        }
+        else{
+            motorConfig.inverted(false);
+        }
+        
         motorConfig.smartCurrentLimit(RevSwerveConfig.driveContinuousCurrentLimit);
         motorConfig.idleMode(RevSwerveConfig.driveIdleMode);
         motorConfig.apply(controller);
@@ -177,7 +183,6 @@ public class RevSwerveModule implements SwerveModule
         
         SparkClosedLoopController controller = mDriveMotor.getClosedLoopController();
         controller.setReference(velocity, ControlType.kVelocity);
-        
     }
 
     private void setAngle(SwerveModuleState desiredState)
@@ -186,7 +191,6 @@ public class RevSwerveModule implements SwerveModule
         {
             mAngleMotor.stopMotor();
             return;
-
         }
         //Prevent rotating module if speed is less then 1%. Prevents Jittering.       
         SparkClosedLoopController controller = mAngleMotor.getClosedLoopController();

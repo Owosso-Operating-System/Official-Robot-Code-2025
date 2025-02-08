@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -9,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.robot.commands.*;
 import frc.robot.robot.subsystems.Intake;
-import frc.robot.robot.subsystems.TestLift;
+import frc.robot.robot.subsystems.LiftSubsystem;
 import frc.robot.robot.subsystems.swerve.rev.RevSwerve;
 
 /**
@@ -37,11 +38,16 @@ public class RobotContainer {
 
     /* Subsystems */
     private final RevSwerve s_Swerve = new RevSwerve();
-    private final TestLift liftSub = new TestLift();
-    private final Intake intakeSub = new Intake();
+    private final Intake intakeSub = new Intake();    
+    private final LiftSubsystem liftSubsystem = new LiftSubsystem();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
+
+        liftSubsystem.setDefaultCommand(new Lift(liftSubsystem, auxiliaryController));
+
+        Timer.delay(1.0);
+        s_Swerve.resetModulesToAbsolute();
 
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
@@ -52,8 +58,6 @@ public class RobotContainer {
                 () -> false
             )
         );
-
-        liftSub.setDefaultCommand(new LiftCommand(liftSub, auxiliaryController));
 
         // Configure the button bindings
         configureButtonBindings();
@@ -80,6 +84,9 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
+        Timer.delay(1.0);
+        s_Swerve.resetModulesToAbsolute();
+
         return null;
     }
 }
