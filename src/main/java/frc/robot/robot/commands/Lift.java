@@ -11,20 +11,20 @@ import frc.robot.robot.subsystems.LiftSubsystem;
 public class Lift extends Command {
 
     public final LiftSubsystem liftSubsystem;
-    public final XboxController controller1;
+    public final XboxController auxiliaryController;
 
     /**
      * Method: Lift
      * Parameters: LiftSubsystem and XboxController
-     * Variables used: liftSubsystem and controller1
+     * Variables used: liftSubsystem and auxiliaryController
      * What it does: Assigns the parameter LiftSubsystem to liftSubsystem
-     * Assigns the parameter XboxController to controller1
+     * Assigns the parameter XboxController to auxiliaryController
      * Uses addRequirements to tie LiftSubsystem to Lift
      */
 
-    public Lift(LiftSubsystem liftSubsystem, XboxController controller1) {
+    public Lift(LiftSubsystem liftSubsystem, XboxController auxiliaryController) {
         this.liftSubsystem = liftSubsystem;
-        this.controller1 = controller1;
+        this.auxiliaryController = auxiliaryController;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(this.liftSubsystem);
     }
@@ -32,18 +32,18 @@ public class Lift extends Command {
     /**
      * Method: execute
      * Parameters: None
-     * Variables used: liftSubsystem.liftL, liftSubsystem.liftR, and controller1
+     * Variables used: liftSubsystem.liftL, liftSubsystem.liftR, and auxiliaryController
      * What it does: Takes the controller outputs, passes the values to lift motors
      * (LT for one direction, RT for the other)
      */
     @Override
     public void execute() {
-        if (controller1.getRawAxis(2) > .2) {
-            liftSubsystem.liftL.set(controller1.getRawAxis(2));
-            liftSubsystem.liftR.set(controller1.getRawAxis(2));
-        } else if (controller1.getRawAxis(3) > .2) {
-            liftSubsystem.liftL.set(-controller1.getRawAxis(3));
-            liftSubsystem.liftR.set(-controller1.getRawAxis(3));
+        if (auxiliaryController.getRawAxis(2) > .2) {
+            liftSubsystem.liftL.set(auxiliaryController.getRawAxis(2));
+            liftSubsystem.liftR.set(auxiliaryController.getRawAxis(2));
+        } else if (auxiliaryController.getRawAxis(3) > .2) {
+            liftSubsystem.liftL.set(-auxiliaryController.getRawAxis(3));
+            liftSubsystem.liftR.set(-auxiliaryController.getRawAxis(3));
         } else {
             liftSubsystem.liftL.set(0);
             liftSubsystem.liftR.set(0);
