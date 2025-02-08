@@ -39,6 +39,7 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
+
             //new Lift
             liftSubsystem = new LiftSubsystem();
             controller1 = new XboxController(1);
