@@ -19,4 +19,6 @@ public interface SwerveModule
 
     public void setModuleNumber(int moduleNumber);
 
+    public void resetToAbsolute();
+
 }

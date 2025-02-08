@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -43,6 +44,9 @@ public class RevSwerve extends SubsystemBase {
             new RevSwerveModule(2, RevSwerveConstants.Swerve.Mod2.constants),
             new RevSwerveModule(3, RevSwerveConstants.Swerve.Mod3.constants)
         };
+
+        Timer.delay(1.0);
+        resetModulesToAbsolute();
 
         swerveOdometry = new SwerveDriveOdometry(RevSwerveConfig.swerveKinematics, getYaw(), getModulePositions());
         zeroGyro();
@@ -119,6 +123,12 @@ public class RevSwerve extends SubsystemBase {
             positions[mod.getModuleNumber()] = mod.getPosition();
         }
         return positions;
+    }
+
+    public void resetModulesToAbsolute(){
+        for(SwerveModule mod : mSwerveMods){
+            mod.resetToAbsolute();
+        }
     }
 
     public void zeroGyro(double deg) {
