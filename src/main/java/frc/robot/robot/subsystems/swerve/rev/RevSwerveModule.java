@@ -1,8 +1,6 @@
 
 package frc.robot.robot.subsystems.swerve.rev;
 
-import java.lang.Thread.State;
-
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 //import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -22,8 +20,6 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import frc.robot.lib.util.swerveUtil.CTREModuleState;
 import frc.robot.lib.util.swerveUtil.RevSwerveModuleConstants;
 
