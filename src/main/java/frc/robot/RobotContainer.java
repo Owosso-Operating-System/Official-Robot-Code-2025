@@ -1,7 +1,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -9,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.robot.commands.*;
-import frc.robot.robot.subsystems.Intake;
+import frc.robot.robot.subsystems.IntakeSubsystem;
 import frc.robot.robot.subsystems.LiftSubsystem;
 import frc.robot.robot.subsystems.swerve.rev.RevSwerve;
 
@@ -38,7 +37,7 @@ public class RobotContainer {
 
     /* Subsystems */
     private final RevSwerve s_Swerve = new RevSwerve();
-    private final Intake intakeSub = new Intake();    
+    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();    
     private final LiftSubsystem liftSubsystem = new LiftSubsystem();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -74,8 +73,8 @@ public class RobotContainer {
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
 
         /*Auxiliary Buttons */
-        //intakeIn.onTrue(new );
-        //intakeOut.onTrue(new );
+        intakeIn.onTrue(new Intake(intakeSubsystem, auxiliaryController));
+        intakeOut.onTrue(new Intake(intakeSubsystem, auxiliaryController));
     }
 
     /**
