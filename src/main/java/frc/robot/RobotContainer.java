@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.robot.commands.*;
+import frc.robot.robot.subsystems.LiftSubsystem;
 import frc.robot.robot.subsystems.swerve.rev.RevSwerve;
 
 /**
@@ -19,6 +20,9 @@ import frc.robot.robot.subsystems.swerve.rev.RevSwerve;
 public class RobotContainer {
     /* Controllers */
     private final Joystick driver = new Joystick(0);
+      // Create new lift subsystem object
+     private final LiftSubsystem liftSubsystem;
+     private final XboxController controller1;
 
     /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -34,6 +38,10 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
+            //new Lift
+            liftSubsystem = new LiftSubsystem();
+            controller1 = new XboxController(1);
+            liftSubsystem.setDefaultCommand(new Lift(liftSubsystem, controller1));
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve, 
