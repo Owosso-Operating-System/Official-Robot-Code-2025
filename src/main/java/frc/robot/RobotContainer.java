@@ -21,9 +21,7 @@ import frc.robot.robot.subsystems.swerve.rev.RevSwerve;
 public class RobotContainer {
     /* Controllers */
     private final Joystick driver = new Joystick(0);
-      // Create new lift subsystem object
-     private final LiftSubsystem liftSubsystem;
-     private final XboxController controller1;
+    private final XboxController controller1 = new XboxController(1);
 
     /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -35,15 +33,12 @@ public class RobotContainer {
 
     /* Subsystems */
     private final RevSwerve s_Swerve = new RevSwerve();
-
+    private final LiftSubsystem liftSubsystem = new LiftSubsystem();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
 
-            //new Lift
-            liftSubsystem = new LiftSubsystem();
-            controller1 = new XboxController(1);
-            liftSubsystem.setDefaultCommand(new Lift(liftSubsystem, controller1));
+        liftSubsystem.setDefaultCommand(new Lift(liftSubsystem, controller1));
 
         Timer.delay(1.0);
         s_Swerve.resetModulesToAbsolute();
