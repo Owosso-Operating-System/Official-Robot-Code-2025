@@ -138,22 +138,14 @@ public class RevSwerveModule implements SwerveModule
         mDriveMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
-    private SwerveModuleState optimizeAngle(SwerveModuleState swerveModuleState, Rotation2d rotation2d)
-    {
-        double desiredAngle = swerveModuleState.angle.getRotations();
-        double currentAngle = rotation2d.getRotations() / RevSwerveConfig.angleGearRatio;
-
-        while(desiredAngle - currentAngle > 1){
-            desiredAngle -= 1;
+    private SwerveModuleState optimizeAngle(SwerveModuleState desiredState, Rotation2d currentAngle) {
+        var delta = desiredState.angle.minus(currentAngle);
+        if (Math.abs(delta.getDegrees()) > 90.0) {
+          return new SwerveModuleState(
+              -desiredState.speedMetersPerSecond, desiredState.angle.rotateBy(Rotation2d.kPi));
+        } else {
+          return new SwerveModuleState(desiredState.speedMetersPerSecond, desiredState.angle);
         }
-
-        while(desiredAngle - currentAngle < -1){
-            desiredAngle += 1;
-        }
-
-        swerveModuleState.angle = Rotation2d.fromRotations((desiredAngle));
-
-        return swerveModuleState;
     }
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop)
@@ -161,10 +153,11 @@ public class RevSwerveModule implements SwerveModule
         
         /* This is a custom optimize function, since default WPILib optimize assumes continuous controller which CTRE and Rev onboard is not */
         // CTREModuleState actually works for any type of motor.
-        //desiredState = CTREModuleState.optimize(desiredState, getState().angle); 
+        // desiredState = CTREModuleState.optimize(desiredState, getState().angle); 
         System.out.println("Angle CANCODER Encoder: " + moduleNumber + '\n' + ' ' + angleEncoder.getPosition().getValueAsDouble());
 
         desiredState = optimizeAngle(desiredState, getState().angle);
+        
         setAngle(desiredState);
         setSpeed(desiredState, isOpenLoop);
     }
