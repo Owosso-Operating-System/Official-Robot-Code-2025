@@ -39,12 +39,12 @@ public class Intake extends Command {
      */
     @Override
     public void execute() {
-        if (auxiliaryController.getAButtonPressed()) {
-            intakeSubsystem.intakeT.set(1);
-            intakeSubsystem.intakeB.set(1);
-        } else if (auxiliaryController.getBButtonPressed()) {
-            intakeSubsystem.intakeT.set(-1);
-            intakeSubsystem.intakeB.set(-1);
+        if (auxiliaryController.getAButton()) {
+            intakeSubsystem.intakeT.set(-0.25);
+            intakeSubsystem.intakeB.set(-0.25);
+        } else if (auxiliaryController.getBButton()) {
+            intakeSubsystem.intakeT.set(0.25);
+            intakeSubsystem.intakeB.set(0.25);
         } else {
             intakeSubsystem.intakeT.set(0);
             intakeSubsystem.intakeB.set(0);

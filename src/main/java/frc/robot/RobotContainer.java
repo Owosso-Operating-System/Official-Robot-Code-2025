@@ -34,6 +34,9 @@ public class RobotContainer {
     /* Auxiliary Buttons */
     private final JoystickButton intakeIn = new JoystickButton(auxiliaryController, XboxController.Button.kA.value);
     private final JoystickButton intakeOut = new JoystickButton(auxiliaryController, XboxController.Button.kB.value);
+    private final JoystickButton liftFastUp = new JoystickButton(auxiliaryController, XboxController.Button.kRightBumper.value);
+    private final JoystickButton liftFastDown = new JoystickButton(auxiliaryController, XboxController.Button.kLeftBumper.value);
+
 
     /* Subsystems */
     private final RevSwerve s_Swerve = new RevSwerve();
@@ -75,6 +78,8 @@ public class RobotContainer {
         /*Auxiliary Buttons */
         intakeIn.onTrue(new Intake(intakeSubsystem, auxiliaryController));
         intakeOut.onTrue(new Intake(intakeSubsystem, auxiliaryController));
+        liftFastUp.onTrue(new Lift(liftSubsystem, auxiliaryController));
+        liftFastDown.onTrue(new Lift(liftSubsystem, auxiliaryController));
     }
 
     /**
