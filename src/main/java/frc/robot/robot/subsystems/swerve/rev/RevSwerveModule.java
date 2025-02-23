@@ -134,14 +134,33 @@ public class RevSwerveModule implements SwerveModule
         mDriveMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
-    private SwerveModuleState optimizeAngle(SwerveModuleState desiredState, Rotation2d currentAngle) {
-        var delta = desiredState.angle.minus(currentAngle);
-        if (Math.abs(delta.getDegrees()) > 90.0) {
-          return new SwerveModuleState(
-              -desiredState.speedMetersPerSecond, desiredState.angle.rotateBy(Rotation2d.kPi));
-        } else {
-          return new SwerveModuleState(desiredState.speedMetersPerSecond, desiredState.angle);
+    private SwerveModuleState optimizeAngle(SwerveModuleState desiredState, Rotation2d rotation2d)
+    {
+        double desiredAngle = desiredState.angle.getRotations();
+        double currentAngle = rotation2d.getRotations() / RevSwerveConfig.angleGearRatio;
+        double deltaAngle =  desiredAngle - currentAngle;
+
+        while(deltaAngle > 1){
+            desiredAngle -= 1;
         }
+
+        while(deltaAngle < -1){
+            desiredAngle += 1;
+        }
+
+        if(desiredAngle > 0.25){
+            desiredAngle = desiredAngle - 0.5;
+            desiredState.speedMetersPerSecond = -desiredState.speedMetersPerSecond;
+        }
+
+        if(desiredAngle < -0.25){
+            desiredAngle = desiredAngle + 0.5;
+            desiredState.speedMetersPerSecond = -desiredState.speedMetersPerSecond;
+        }
+
+        desiredState.angle = Rotation2d.fromRotations((desiredAngle));
+
+        return desiredState;
     }
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop)
