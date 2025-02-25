@@ -21,4 +21,6 @@ public interface SwerveModule
 
     public void resetToAbsolute();
 
+    public void stopMotor();
+
 }

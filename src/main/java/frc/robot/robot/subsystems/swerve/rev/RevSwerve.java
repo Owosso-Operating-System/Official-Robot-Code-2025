@@ -147,6 +147,12 @@ public class RevSwerve extends SubsystemBase {
         return (RevSwerveConfig.invertGyro) ? Rotation2d.fromDegrees((gyro.getYaw().getValueAsDouble())) : Rotation2d.fromDegrees(gyro.getYaw().getValueAsDouble());
     }
 
+    public void stopMotor(){
+        for(SwerveModule mod : mSwerveMods){
+            mod.stopMotor();
+        }
+    }
+
     @Override
     public void periodic() {
         for(SwerveModule mod : mSwerveMods) {
@@ -154,5 +160,8 @@ public class RevSwerve extends SubsystemBase {
             SmartDashboard.putNumber("REV Mod " + mod.getModuleNumber() + " Integrated", mod.getPosition().angle.getDegrees());
             SmartDashboard.putNumber("REV Mod " + mod.getModuleNumber() + " Velocity", mod.getState().speedMetersPerSecond);    
         }
+
+        swerveOdometry.update(getYaw(), getModulePositions());
+
     }
 }

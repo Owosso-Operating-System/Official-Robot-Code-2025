@@ -38,12 +38,12 @@ public class Lift extends Command {
      */
     @Override
     public void execute() {
-        if (auxiliaryController.getRawAxis(3) > .2) {
-            liftSubsystem.liftL.set(auxiliaryController.getRawAxis(3) * 0.5);
-            liftSubsystem.liftR.set(auxiliaryController.getRawAxis(3) * 0.5);
-        } else if (auxiliaryController.getRawAxis(2) > .2) {
-            liftSubsystem.liftL.set(-auxiliaryController.getRawAxis(2) * 0.5);
-            liftSubsystem.liftR.set(-auxiliaryController.getRawAxis(2) * 0.5);
+        if (auxiliaryController.getRawAxis(1) > 0.1) {
+            liftSubsystem.liftL.set(-auxiliaryController.getRawAxis(1) * 0.5);
+            liftSubsystem.liftR.set(-auxiliaryController.getRawAxis(1) * 0.5);
+        } else if (auxiliaryController.getRawAxis(1) < -0.1) {
+            liftSubsystem.liftL.set(-auxiliaryController.getRawAxis(1) * 0.5);
+            liftSubsystem.liftR.set(-auxiliaryController.getRawAxis(1) * 0.5);
         }else if (auxiliaryController.getRightBumperButton()) {
             liftSubsystem.liftL.set(1);
             liftSubsystem.liftR.set(1);

@@ -20,7 +20,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import frc.robot.lib.util.swerveUtil.CTREModuleState;
+//import frc.robot.lib.util.swerveUtil.CTREModuleState;
 import frc.robot.lib.util.swerveUtil.RevSwerveModuleConstants;
 
 /**
@@ -136,18 +136,25 @@ public class RevSwerveModule implements SwerveModule
 
     private SwerveModuleState optimizeAngle(SwerveModuleState desiredState, Rotation2d rotation2d)
     {
-        double desiredAngle = desiredState.angle.getRotations();
-        double currentAngle = rotation2d.getRotations() / RevSwerveConfig.angleGearRatio;
-        double deltaAngle =  desiredAngle - currentAngle;
+        double desiredAngle = getRotationBound(desiredState.angle.getRotations());
+        double desiredAngleI = getRotationBound(desiredAngle - 0.5);
+        double currentAngle = getRotationBound(rotation2d.getRotations() / RevSwerveConfig.angleGearRatio);
 
-        while(deltaAngle > 1){
-            desiredAngle -= 1;
+        double deltaAngleR =  getRotationBound(desiredAngle - currentAngle);
+        double deltaAngleI =  getRotationBound(desiredAngleI - currentAngle);
+
+        //
+        if(Math.abs(deltaAngleI) > Math.abs(deltaAngleR)){
+            desiredState.angle = Rotation2d.fromRotations((desiredAngle));
         }
 
-        while(deltaAngle < -1){
-            desiredAngle += 1;
+        //
+        if(Math.abs(deltaAngleI) < Math.abs(deltaAngleR)){
+            desiredState.speedMetersPerSecond = -desiredState.speedMetersPerSecond;
+            desiredState.angle = Rotation2d.fromRotations((desiredAngleI));
         }
-
+        
+        /*
         if(desiredAngle > 0.25){
             desiredAngle = desiredAngle - 0.5;
             desiredState.speedMetersPerSecond = -desiredState.speedMetersPerSecond;
@@ -159,8 +166,21 @@ public class RevSwerveModule implements SwerveModule
         }
 
         desiredState.angle = Rotation2d.fromRotations((desiredAngle));
+        */
 
         return desiredState;
+    }
+
+    public double getRotationBound(double angle){
+        if(angle > 1){
+            angle = angle - 1;
+            return getRotationBound(angle);
+        }else if(angle < -1){
+            angle = angle + 1;
+            return getRotationBound(angle);
+        }else{
+            return angle;
+        }
     }
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop)
@@ -262,6 +282,12 @@ public class RevSwerveModule implements SwerveModule
         );
     }
 
-    
+    public void stopMotor(){
+        SwerveModuleState stopModuleState = new SwerveModuleState();
+        stopModuleState.speedMetersPerSecond = 0;
+
+        setAngle(stopModuleState);
+        setSpeed(stopModuleState, false);
+    }
 
 }

@@ -1,16 +1,29 @@
 package frc.robot;
 
+import java.util.List;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.robot.commands.*;
 import frc.robot.robot.subsystems.IntakeSubsystem;
 import frc.robot.robot.subsystems.LiftSubsystem;
 import frc.robot.robot.subsystems.swerve.rev.RevSwerve;
+import frc.robot.robot.subsystems.swerve.rev.RevSwerveConfig;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -91,6 +104,38 @@ public class RobotContainer {
         Timer.delay(1.0);
         s_Swerve.resetModulesToAbsolute();
 
-        return null;
+        TrajectoryConfig trajectoryConfig = new TrajectoryConfig
+            (RevSwerveConfig.maxAngularVelocity, RevSwerveConfig.maxSpeed)
+            .setKinematics(RevSwerveConfig.swerveKinematics);
+
+        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(0,0, new Rotation2d(0)),
+            List.of(
+                new Translation2d(1,0),
+                new Translation2d(1,1)
+            ),
+            new Pose2d(0,1, Rotation2d.fromDegrees(0)),
+            trajectoryConfig);
+
+        PIDController xController = new PIDController(0.1, 0, 0);
+        PIDController yController = new PIDController(0.1, 0, 0);
+        ProfiledPIDController thetaController = new ProfiledPIDController(0.1, 0, 0, null);
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+        SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+            trajectory,
+            s_Swerve::getPose,
+            RevSwerveConfig.swerveKinematics,
+            xController,
+            yController,
+            thetaController,
+            s_Swerve::setModuleStates,
+            s_Swerve);
+
+        return new SequentialCommandGroup(
+            new InstantCommand(() -> s_Swerve.resetOdometry(trajectory.getInitialPose())),
+            swerveControllerCommand,
+            new InstantCommand(() -> s_Swerve.stopMotor())
+        );
     }
 }
