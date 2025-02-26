@@ -137,19 +137,29 @@ public class RevSwerveModule implements SwerveModule
     private SwerveModuleState optimizeAngle(SwerveModuleState desiredState, Rotation2d rotation2d)
     {
         double desiredAngle = getRotationBound(desiredState.angle.getRotations());
-        double desiredAngleI = getRotationBound(desiredAngle - 0.5);
+        double desiredAngleI;
+        
+        if(desiredAngle > 0){
+            desiredAngleI= getRotationBound(desiredAngle - 0.5);
+        }else{
+            desiredAngleI= getRotationBound(desiredAngle + 0.5);
+        }
+
         double currentAngle = getRotationBound(rotation2d.getRotations() / RevSwerveConfig.angleGearRatio);
 
         double deltaAngleR =  getRotationBound(desiredAngle - currentAngle);
         double deltaAngleI =  getRotationBound(desiredAngleI - currentAngle);
 
+        //System.out.println("Real Angle: " + deltaAngleR);
+        //System.out.println("Inverse Angle: " + deltaAngleI);
+
         //
-        if(Math.abs(deltaAngleI) > Math.abs(deltaAngleR)){
+        if(Math.abs(deltaAngleI) >= Math.abs(deltaAngleR)){
             desiredState.angle = Rotation2d.fromRotations((desiredAngle));
         }
 
         //
-        if(Math.abs(deltaAngleI) < Math.abs(deltaAngleR)){
+        if(Math.abs(deltaAngleI) < Math.abs(deltaAngleR) + 0.05){
             desiredState.speedMetersPerSecond = -desiredState.speedMetersPerSecond;
             desiredState.angle = Rotation2d.fromRotations((desiredAngleI));
         }
@@ -189,6 +199,7 @@ public class RevSwerveModule implements SwerveModule
         /* This is a custom optimize function, since default WPILib optimize assumes continuous controller which CTRE and Rev onboard is not */
         // CTREModuleState actually works for any type of motor.
         // desiredState = CTREModuleState.optimize(desiredState, getState().angle); 
+        
         System.out.println("Angle CANCODER Encoder: " + moduleNumber + '\n' + ' ' + angleEncoder.getPosition().getValueAsDouble());
 
         desiredState = optimizeAngle(desiredState, getState().angle);
