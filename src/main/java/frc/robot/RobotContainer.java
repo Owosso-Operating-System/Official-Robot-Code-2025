@@ -114,14 +114,14 @@ public class RobotContainer {
             new Pose2d(0,0, new Rotation2d(0)),
             List.of(
                 new Translation2d(1,0),
-                new Translation2d(1,1)
+                new Translation2d(2,0)
             ),
-            new Pose2d(0,1, Rotation2d.fromDegrees(0)),
+            new Pose2d(3,0, Rotation2d.fromDegrees(0)),
             trajectoryConfig);
 
         PIDController xController = new PIDController(0.1, 0, 0);
         PIDController yController = new PIDController(0.1, 0, 0);
-        ProfiledPIDController thetaController = new ProfiledPIDController(0.1, 0, 0, new TrapezoidProfile.Constraints(5, 10));
+        ProfiledPIDController thetaController = new ProfiledPIDController(0.1, 0, 0.0, new TrapezoidProfile.Constraints(5, 10));
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
