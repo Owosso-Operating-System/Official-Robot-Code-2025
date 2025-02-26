@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.ExponentialProfile.Constraints;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Timer;
@@ -120,9 +121,7 @@ public class RobotContainer {
 
         PIDController xController = new PIDController(0.1, 0, 0);
         PIDController yController = new PIDController(0.1, 0, 0);
-
-        //we need to add a constraint for this to work (make a constraint object and pass it in instead of null)
-        ProfiledPIDController thetaController = new ProfiledPIDController(0.1, 0, 0, null);
+        ProfiledPIDController thetaController = new ProfiledPIDController(0.1, 0, 0, new TrapezoidProfile.Constraints(5, 10));
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
