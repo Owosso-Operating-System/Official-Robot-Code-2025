@@ -88,8 +88,8 @@ public class RevSwerveConfig
     public static final double angleKF = 0;
 
     /* Drive Motor PID Values */
-    public static final double driveKP = 0.01; 
-    public static final double driveKI = 0.001;
+    public static final double driveKP = 0.1; 
+    public static final double driveKI = 0.0;
     public static final double driveKD = 0.05;
     public static final double driveKF = 0.0;
 
@@ -101,7 +101,7 @@ public class RevSwerveConfig
 
     /* Swerve Profiling Values */
     /** Meters per Second */
-    public static final double maxSpeed = 1;
+    public static final double maxSpeed = 0.9;
     /** Radians per Second */
     public static final double maxAngularVelocity = 10; 
 

@@ -11,7 +11,6 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.ExponentialProfile.Constraints;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
@@ -69,9 +68,9 @@ public class RobotContainer {
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve, 
-                () -> -driveController.getRawAxis(translationAxis), 
-                () -> -driveController.getRawAxis(strafeAxis), 
-                () -> -driveController.getRawAxis(rotationAxis), 
+                () -> -driveController.getRawAxis(translationAxis) * 0.5, 
+                () -> -driveController.getRawAxis(strafeAxis) * 0.5, 
+                () -> -driveController.getRawAxis(rotationAxis) * 0.5, 
                 () -> false
             )
         );

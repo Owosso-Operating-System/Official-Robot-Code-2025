@@ -159,11 +159,17 @@ public class RevSwerveModule implements SwerveModule
         }
 
         //
-        if(Math.abs(deltaAngleI) < Math.abs(deltaAngleR) + 0.05){
+        if(Math.abs(deltaAngleI) < Math.abs(deltaAngleR)){
             desiredState.speedMetersPerSecond = -desiredState.speedMetersPerSecond;
             desiredState.angle = Rotation2d.fromRotations((desiredAngleI));
         }
         
+        //
+        if(Math.abs(deltaAngleI) >= Math.abs(deltaAngleR) - 0.06 && Math.abs(deltaAngleI) <= Math.abs(deltaAngleR) + 0.06){
+            desiredState.speedMetersPerSecond = -desiredState.speedMetersPerSecond;
+            desiredState.angle = Rotation2d.fromRotations((desiredAngleI));
+        }
+
         /*
         if(desiredAngle > 0.25){
             desiredAngle = desiredAngle - 0.5;
@@ -222,6 +228,12 @@ public class RevSwerveModule implements SwerveModule
         
         SparkClosedLoopController controller = mDriveMotor.getClosedLoopController();
         controller.setReference(velocity, ControlType.kVelocity);
+
+        if(Math.abs(desiredState.speedMetersPerSecond) <= (RevSwerveConfig.maxSpeed * 0.01)) 
+        {
+            mDriveMotor.stopMotor();
+            return;
+        }
     }
 
     private void setAngle(SwerveModuleState desiredState)
