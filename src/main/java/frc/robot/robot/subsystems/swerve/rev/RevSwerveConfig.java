@@ -89,8 +89,8 @@ public class RevSwerveConfig
 
     /* Drive Motor PID Values */
     public static final double driveKP = 0.01; 
-    public static final double driveKI = 0.0;
-    public static final double driveKD = 0.0;
+    public static final double driveKI = 0.001;
+    public static final double driveKD = 0.05;
     public static final double driveKF = 0.0;
 
     /* Drive Motor Characterization Values 
