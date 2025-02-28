@@ -96,7 +96,7 @@ public class RevSwerve extends SubsystemBase {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, RevSwerveConfig.maxSpeed);
         
         for(SwerveModule mod : mSwerveMods){
-            mod.setDesiredState(desiredStates[mod.getModuleNumber()], false);
+            mod.setDesiredState(desiredStates[mod.getModuleNumber()], true);
         }
     }    
     public Pose2d getPose() {
