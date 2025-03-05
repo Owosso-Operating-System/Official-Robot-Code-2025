@@ -101,7 +101,7 @@ public class RevSwerve extends SubsystemBase {
     }    
     public Pose2d getPose() {
         Pose2d p =  swerveOdometry.getPoseMeters();
-        return new Pose2d(p.getX(), p.getY(),  p.getRotation());
+        return new Pose2d(-p.getX(), -p.getY(),  p.getRotation());
     }
     public void resetOdometry(Pose2d pose) {
         

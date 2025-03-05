@@ -150,39 +150,15 @@ public class RevSwerveModule implements SwerveModule
         double deltaAngleR =  getRotationBound(desiredAngle - currentAngle);
         double deltaAngleI =  getRotationBound(desiredAngleI - currentAngle);
 
-        //System.out.println("Real Angle: " + deltaAngleR);
-        //System.out.println("Inverse Angle: " + deltaAngleI);
-
         //
-        if(Math.abs(deltaAngleI) >= Math.abs(deltaAngleR)){
+        if(Math.abs(deltaAngleI) > Math.abs(deltaAngleR) + 0.05){
             desiredState.angle = Rotation2d.fromRotations((desiredAngle));
-        }
-
-        //
-        if(Math.abs(deltaAngleI) < Math.abs(deltaAngleR)){
+        }else if(Math.abs(deltaAngleI) < Math.abs(deltaAngleR) - 0.05){
             desiredState.speedMetersPerSecond = -desiredState.speedMetersPerSecond;
             desiredState.angle = Rotation2d.fromRotations((desiredAngleI));
+        }else{
+            System.out.println("This is strafe. \n Real angle: " + desiredAngle + "\n Inverse angle: " + desiredAngleI);
         }
-        
-        //
-        if(Math.abs(deltaAngleI) >= Math.abs(deltaAngleR) - 0.06 && Math.abs(deltaAngleI) <= Math.abs(deltaAngleR) + 0.06){
-            desiredState.speedMetersPerSecond = -desiredState.speedMetersPerSecond;
-            desiredState.angle = Rotation2d.fromRotations((desiredAngleI));
-        }
-
-        /*
-        if(desiredAngle > 0.25){
-            desiredAngle = desiredAngle - 0.5;
-            desiredState.speedMetersPerSecond = -desiredState.speedMetersPerSecond;
-        }
-
-        if(desiredAngle < -0.25){
-            desiredAngle = desiredAngle + 0.5;
-            desiredState.speedMetersPerSecond = -desiredState.speedMetersPerSecond;
-        }
-
-        desiredState.angle = Rotation2d.fromRotations((desiredAngle));
-        */
 
         return desiredState;
     }
@@ -206,7 +182,7 @@ public class RevSwerveModule implements SwerveModule
         // CTREModuleState actually works for any type of motor.
         // desiredState = CTREModuleState.optimize(desiredState, getState().angle); 
         
-        System.out.println("Angle CANCODER Encoder: " + moduleNumber + '\n' + ' ' + angleEncoder.getPosition().getValueAsDouble());
+        //System.out.println("Angle CANCODER Encoder: " + moduleNumber + '\n' + ' ' + angleEncoder.getPosition().getValueAsDouble());
 
         desiredState = optimizeAngle(desiredState, getState().angle);
         

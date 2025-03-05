@@ -23,9 +23,6 @@ public final class RevSwerveConstants
     public static final class REV
     {
         public static final int pigeonID = 5;
-
-       
-    
     }
     public static final class Swerve {
         /* Module Specific Constants */

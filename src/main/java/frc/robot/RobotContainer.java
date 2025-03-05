@@ -1,6 +1,5 @@
 package frc.robot;
 
-import java.lang.reflect.ReflectPermission;
 import java.util.List;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -8,7 +7,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
+//import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
@@ -17,7 +16,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
+//import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -51,9 +50,9 @@ public class RobotContainer {
     /* Auxiliary Buttons */
     private final JoystickButton intakeIn = new JoystickButton(auxiliaryController, XboxController.Button.kA.value);
     private final JoystickButton intakeOut = new JoystickButton(auxiliaryController, XboxController.Button.kB.value);
-    private final JoystickButton liftFastUp = new JoystickButton(auxiliaryController, XboxController.Button.kRightBumper.value);
-    private final JoystickButton liftFastDown = new JoystickButton(auxiliaryController, XboxController.Button.kLeftBumper.value);
-
+    private final JoystickButton liftReload = new JoystickButton(auxiliaryController, XboxController.Button.kX.value);
+    private final JoystickButton liftCoral1 = new JoystickButton(auxiliaryController, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton liftCoral2 = new JoystickButton(auxiliaryController, XboxController.Button.kRightBumper.value);
 
     /* Subsystems */
     private final RevSwerve s_Swerve = new RevSwerve();
@@ -95,8 +94,10 @@ public class RobotContainer {
         /*Auxiliary Buttons */
         intakeIn.onTrue(new Intake(intakeSubsystem, auxiliaryController));
         intakeOut.onTrue(new Intake(intakeSubsystem, auxiliaryController));
-        liftFastUp.onTrue(new Lift(liftSubsystem, auxiliaryController));
-        liftFastDown.onTrue(new Lift(liftSubsystem, auxiliaryController));
+        liftReload.onTrue(new Lift(liftSubsystem, auxiliaryController));
+        liftCoral1.onTrue(new Lift(liftSubsystem, auxiliaryController));
+        liftCoral2.onTrue(new Lift(liftSubsystem, auxiliaryController));
+
     }
 
     /**
@@ -128,10 +129,9 @@ public class RobotContainer {
         Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
             new Pose2d(0,0, new Rotation2d(0)),
             List.of(
-                new Translation2d(0.1,0),
-                new Translation2d(0.2,0)
+                new Translation2d(-1,0)
             ),
-            new Pose2d(1,0, Rotation2d.fromDegrees(0)),
+            new Pose2d(-2,0, Rotation2d.fromDegrees(180)),
             trajectoryConfig);
 
         PIDController xController = new PIDController(0.01, 0, 0.05);

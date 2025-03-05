@@ -3,6 +3,7 @@ package frc.robot.robot.subsystems;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,8 +19,10 @@ public class LiftSubsystem extends SubsystemBase {
     public SparkMax liftL;
     public SparkMax liftR;
 
-    SparkMaxConfig configliftL;
-    SparkMaxConfig configliftR;
+    public SparkMaxConfig configliftL;
+    public SparkMaxConfig configliftR;
+
+    public RelativeEncoder liftPosition;
 
     /**
      * Method: LiftSubsysem
@@ -41,11 +44,16 @@ public class LiftSubsystem extends SubsystemBase {
 
         liftL.configure(configliftL, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         liftR.configure(configliftR, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        liftPosition = liftL.getEncoder();
+        liftPosition.setPosition(0);
     }
 
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
+        //System.out.println("Lift is at :" + liftPosition.getPosition());
+
     }
 
 }

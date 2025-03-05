@@ -38,19 +38,74 @@ public class Lift extends Command {
      */
     @Override
     public void execute() {
+        final double targetX = 19.047555;
+
+        while(auxiliaryController.getXButton() && (auxiliaryController.getRawAxis(1) < 0.1 && auxiliaryController.getRawAxis(1) > -0.1)){
+            if(liftSubsystem.liftPosition.getPosition() < targetX - 0.5){
+                liftSubsystem.liftL.set(0.3);
+                liftSubsystem.liftR.set(0.3);
+            } else if(liftSubsystem.liftPosition.getPosition() > targetX + 0.5){
+                liftSubsystem.liftL.set(-0.3);
+                liftSubsystem.liftR.set(-0.3);
+            }else{
+                liftSubsystem.liftL.set(0);
+                liftSubsystem.liftR.set(0);
+                break;
+            }
+
+            if(auxiliaryController.getRawAxis(1) > 0.1 || auxiliaryController.getRawAxis(1) < -0.1){
+                break;
+            }
+        }
+
+        final double targetLB = 25.35697;
+
+        while(auxiliaryController.getLeftBumperButton() && (auxiliaryController.getRawAxis(1) < 0.1 && auxiliaryController.getRawAxis(1) > -0.1)){
+            if(liftSubsystem.liftPosition.getPosition() < targetLB - 0.5){
+                liftSubsystem.liftL.set(0.3);
+                liftSubsystem.liftR.set(0.3);
+            } else if(liftSubsystem.liftPosition.getPosition() > targetLB + 0.5){
+                liftSubsystem.liftL.set(-0.3);
+                liftSubsystem.liftR.set(-0.3);
+            }else{
+                liftSubsystem.liftL.set(0);
+                liftSubsystem.liftR.set(0); 
+                break;         
+            }
+
+            if(auxiliaryController.getRawAxis(1) > 0.1 || auxiliaryController.getRawAxis(1) < -0.1){
+                break;
+            }
+        }
+
+        final double targetRB = 55.50048;
+
+        while(auxiliaryController.getRightBumperButton() && (auxiliaryController.getRawAxis(1) < 0.1 && auxiliaryController.getRawAxis(1) > -0.1)){
+            if(liftSubsystem.liftPosition.getPosition() < targetRB - 0.5){
+                liftSubsystem.liftL.set(0.3);
+                liftSubsystem.liftR.set(0.3);
+            } else if(liftSubsystem.liftPosition.getPosition() > targetRB + 0.5){
+                liftSubsystem.liftL.set(-0.3);
+                liftSubsystem.liftR.set(-0.3);
+            }else{
+                liftSubsystem.liftL.set(0);
+                liftSubsystem.liftR.set(0); 
+                break;         
+            }
+
+            if(auxiliaryController.getRawAxis(1) > 0.1 || auxiliaryController.getRawAxis(1) < -0.1){
+                break;
+            }
+
+        }
+
         if (auxiliaryController.getRawAxis(1) > 0.1) {
             liftSubsystem.liftL.set(-auxiliaryController.getRawAxis(1) * 0.5);
             liftSubsystem.liftR.set(-auxiliaryController.getRawAxis(1) * 0.5);
         } else if (auxiliaryController.getRawAxis(1) < -0.1) {
             liftSubsystem.liftL.set(-auxiliaryController.getRawAxis(1) * 0.5);
             liftSubsystem.liftR.set(-auxiliaryController.getRawAxis(1) * 0.5);
-        }else if (auxiliaryController.getRightBumperButton()) {
-            liftSubsystem.liftL.set(1);
-            liftSubsystem.liftR.set(1);
-        }else if (auxiliaryController.getLeftBumperButton()) {
-            liftSubsystem.liftL.set(-1);
-            liftSubsystem.liftR.set(-1);
-        } else {
+        }else {
             liftSubsystem.liftL.set(0);
             liftSubsystem.liftR.set(0);
         }
