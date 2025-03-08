@@ -40,19 +40,19 @@ public class RobotContainer {
     private final XboxController auxiliaryController = new XboxController(1);   
 
     /* Drive Controls */
-    private final int translationAxis = XboxController.Axis.kLeftY.value;
-    private final int strafeAxis = XboxController.Axis.kLeftX.value;
-    private final int rotationAxis = XboxController.Axis.kRightX.value;
+    private final int translationAxis_Left_Joy_Y = XboxController.Axis.kLeftY.value;
+    private final int strafeAxis_Left_Joy_X = XboxController.Axis.kLeftX.value;
+    private final int rotationAxis_Right_Joy_X = XboxController.Axis.kRightX.value;
 
     /* Driver Buttons */
-    private final JoystickButton zeroGyro = new JoystickButton(driveController, XboxController.Button.kY.value);
+    private final JoystickButton zeroGyro_Y = new JoystickButton(driveController, XboxController.Button.kY.value);
 
     /* Auxiliary Buttons */
-    private final JoystickButton intakeIn = new JoystickButton(auxiliaryController, XboxController.Button.kA.value);
-    private final JoystickButton intakeOut = new JoystickButton(auxiliaryController, XboxController.Button.kB.value);
-    private final JoystickButton liftReload = new JoystickButton(auxiliaryController, XboxController.Button.kX.value);
-    private final JoystickButton liftCoral1 = new JoystickButton(auxiliaryController, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton liftCoral2 = new JoystickButton(auxiliaryController, XboxController.Button.kRightBumper.value);
+    private final JoystickButton intakeIn_A = new JoystickButton(auxiliaryController, XboxController.Button.kA.value);
+    private final JoystickButton intakeOut_B = new JoystickButton(auxiliaryController, XboxController.Button.kB.value);
+    private final JoystickButton LiftReload_X = new JoystickButton(auxiliaryController, XboxController.Button.kX.value);
+    private final JoystickButton LiftCoralOne_LB = new JoystickButton(auxiliaryController, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton LiftCoralTwo_RB = new JoystickButton(auxiliaryController, XboxController.Button.kRightBumper.value);
 
     /* Subsystems */
     private final RevSwerve s_Swerve = new RevSwerve();
@@ -70,9 +70,9 @@ public class RobotContainer {
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve, 
-                () -> -driveController.getRawAxis(translationAxis) * 0.5, 
-                () -> -driveController.getRawAxis(strafeAxis) * 0.5, 
-                () -> -driveController.getRawAxis(rotationAxis) * 0.5, 
+                () -> -driveController.getRawAxis(translationAxis_Left_Joy_Y), 
+                () -> -driveController.getRawAxis(strafeAxis_Left_Joy_X), 
+                () -> -driveController.getRawAxis(rotationAxis_Right_Joy_X), 
                 () -> false
             )
         );
@@ -89,15 +89,15 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
-        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+        zeroGyro_Y.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
 
         /*Auxiliary Buttons */
-        intakeIn.onTrue(new Intake(intakeSubsystem, auxiliaryController));
-        intakeOut.onTrue(new Intake(intakeSubsystem, auxiliaryController));
-        liftReload.onTrue(new Lift(liftSubsystem, auxiliaryController));
-        liftCoral1.onTrue(new Lift(liftSubsystem, auxiliaryController));
-        liftCoral2.onTrue(new Lift(liftSubsystem, auxiliaryController));
-
+        intakeIn_A.onTrue(new Intake(intakeSubsystem, auxiliaryController));
+        intakeOut_B.onTrue(new Intake(intakeSubsystem, auxiliaryController));
+        LiftReload_X.whileTrue(new LiftReload(liftSubsystem, auxiliaryController));
+        LiftCoralOne_LB.whileTrue(new LiftCoralOne(liftSubsystem, auxiliaryController));
+        LiftCoralTwo_RB.whileTrue(new LiftCoralTwo(liftSubsystem, auxiliaryController));
+ 
     }
 
     /**
