@@ -40,6 +40,8 @@ public class RevSwerveModule implements SwerveModule
     private RelativeEncoder relDriveEncoder;
     private SwerveModuleState m_desiredState;
 
+    private boolean lastSpeedNegative = false;
+
     //SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.Swerve.driveKS, Constants.Swerve.driveKV, Constants.Swerve.driveKA);
 
     public RevSwerveModule(int moduleNumber, RevSwerveModuleConstants moduleConstants)
@@ -136,28 +138,45 @@ public class RevSwerveModule implements SwerveModule
 
     private SwerveModuleState optimizeAngle(SwerveModuleState desiredState, Rotation2d rotation2d)
     {
-        double desiredAngle = getRotationBound(desiredState.angle.getRotations());
+        double roundScale = 1000;
+
+        double desiredAngle = Math.round(getRotationBound(desiredState.angle.getRotations()) * roundScale)/roundScale;
         double desiredAngleI;
         
         if(desiredAngle > 0){
-            desiredAngleI= getRotationBound(desiredAngle - 0.5);
+            desiredAngleI = Math.round(getRotationBound(desiredAngle - 0.5) * roundScale)/roundScale;
         }else{
-            desiredAngleI= getRotationBound(desiredAngle + 0.5);
+            desiredAngleI = Math.round(getRotationBound(desiredAngle + 0.5) * roundScale)/roundScale;
         }
 
-        double currentAngle = getRotationBound(rotation2d.getRotations() / RevSwerveConfig.angleGearRatio);
+        double currentAngle;
 
-        double deltaAngleR =  getRotationBound(desiredAngle - currentAngle);
-        double deltaAngleI =  getRotationBound(desiredAngleI - currentAngle);
+        if(!lastSpeedNegative){
+            currentAngle = Math.round(getRotationBound(rotation2d.getRotations() / RevSwerveConfig.angleGearRatio) * roundScale)/roundScale;
+        }else{
+            currentAngle = -Math.round(getRotationBound(rotation2d.getRotations() / RevSwerveConfig.angleGearRatio) * roundScale)/roundScale;
+        }
+
+        double deltaAngleR =  Math.round(getRotationBound(desiredAngle - currentAngle) * roundScale)/roundScale;
+        double deltaAngleI =  Math.round(getRotationBound(desiredAngleI - currentAngle) * roundScale)/roundScale;
 
         //
-        if(Math.abs(deltaAngleI) > Math.abs(deltaAngleR) + 0.05){
+        if((Math.abs(deltaAngleI) > Math.abs(deltaAngleR))){
+            lastSpeedNegative = false;
             desiredState.angle = Rotation2d.fromRotations((desiredAngle));
-        }else if(Math.abs(deltaAngleI) < Math.abs(deltaAngleR) - 0.05){
+        }else if(Math.abs(deltaAngleI) < Math.abs(deltaAngleR)){
+            lastSpeedNegative = true;
             desiredState.speedMetersPerSecond = -desiredState.speedMetersPerSecond;
             desiredState.angle = Rotation2d.fromRotations((desiredAngleI));
-        }else{
-            System.out.println("This is strafe. \n Real angle: " + desiredAngle + "\n Inverse angle: " + desiredAngleI);
+        }else if(Math.abs(deltaAngleI) == Math.abs(deltaAngleR)){
+            if(!lastSpeedNegative){
+                lastSpeedNegative = true;
+                desiredState.angle = Rotation2d.fromRotations((desiredAngle));
+            }else{
+                lastSpeedNegative = false;
+                desiredState.speedMetersPerSecond = -desiredState.speedMetersPerSecond;
+                desiredState.angle = Rotation2d.fromRotations((desiredAngleI));
+            }
         }
 
         return desiredState;
@@ -195,7 +214,7 @@ public class RevSwerveModule implements SwerveModule
        
         if(isOpenLoop)
         {
-            double percentOutput = desiredState.speedMetersPerSecond / RevSwerveConfig.maxSpeed;
+            double percentOutput = desiredState.speedMetersPerSecond * RevSwerveConfig.maxSpeed;
             mDriveMotor.set(percentOutput);
             return;
         }
@@ -214,11 +233,13 @@ public class RevSwerveModule implements SwerveModule
 
     private void setAngle(SwerveModuleState desiredState)
     {
+        /*
         if(Math.abs(desiredState.speedMetersPerSecond) <= (RevSwerveConfig.maxSpeed * 0.01)) 
         {
             mAngleMotor.stopMotor();
             return;
         }
+        */
         //Prevent rotating module if speed is less then 1%. Prevents Jittering.       
         SparkClosedLoopController controller = mAngleMotor.getClosedLoopController();
         
@@ -286,7 +307,7 @@ public class RevSwerveModule implements SwerveModule
         stopModuleState.speedMetersPerSecond = 0;
 
         setAngle(stopModuleState);
-        setSpeed(stopModuleState, false);
+        setSpeed(stopModuleState, true);
     }
 
 }
