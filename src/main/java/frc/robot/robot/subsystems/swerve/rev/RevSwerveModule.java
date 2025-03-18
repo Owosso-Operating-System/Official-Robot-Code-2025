@@ -20,6 +20,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import frc.robot.lib.util.swerveUtil.CTREModuleState;
 import frc.robot.lib.util.swerveUtil.RevSwerveModuleConstants;
 
@@ -141,52 +142,38 @@ public class RevSwerveModule implements SwerveModule
         double roundScale = 1000;
 
         double desiredAngle = Math.round(getRotationBound(desiredState.angle.getRotations()) * roundScale)/roundScale;
-        double desiredAngleI;
-        
-        if(desiredAngle > 0){
-            desiredAngleI = Math.round(getRotationBound(desiredAngle - 0.5) * roundScale)/roundScale;
-        }else{
-            desiredAngleI = Math.round(getRotationBound(desiredAngle + 0.5) * roundScale)/roundScale;
-        }
+        double desiredAngleI = Math.round(getRotationBound(desiredAngle - 0.5) * roundScale)/roundScale;
 
-        double currentAngle;
 
-        if(!lastSpeedNegative){
-            currentAngle = Math.round(getRotationBound(rotation2d.getRotations() / RevSwerveConfig.angleGearRatio) * roundScale)/roundScale;
-        }else{
-            currentAngle = -Math.round(getRotationBound(rotation2d.getRotations() / RevSwerveConfig.angleGearRatio) * roundScale)/roundScale;
-        }
+        double currentAngle = -((rotation2d.getRotations() * roundScale)/roundScale);
 
         double deltaAngleR =  Math.round(getRotationBound(desiredAngle - currentAngle) * roundScale)/roundScale;
         double deltaAngleI =  Math.round(getRotationBound(desiredAngleI - currentAngle) * roundScale)/roundScale;
 
+
         //
-        if((Math.abs(deltaAngleI) > Math.abs(deltaAngleR))){
-            lastSpeedNegative = false;
-            desiredState.angle = Rotation2d.fromRotations((desiredAngle));
-        }else if(Math.abs(deltaAngleI) < Math.abs(deltaAngleR)){
-            lastSpeedNegative = true;
-            desiredState.speedMetersPerSecond = -desiredState.speedMetersPerSecond;
-            desiredState.angle = Rotation2d.fromRotations((desiredAngleI));
-        }else if(Math.abs(deltaAngleI) == Math.abs(deltaAngleR)){
-            if(!lastSpeedNegative){
-                lastSpeedNegative = true;
+        SmartDashboard.putNumber("Current Angle", currentAngle);
+        SmartDashboard.putNumber("Target Angle", desiredAngle);
+        SmartDashboard.putNumber("Real Delta", deltaAngleR);
+        SmartDashboard.putNumber("Inverse Delta", deltaAngleI);
+
+
+            if((Math.abs(deltaAngleI) > Math.abs(deltaAngleR))){
                 desiredState.angle = Rotation2d.fromRotations((desiredAngle));
-            }else{
-                lastSpeedNegative = false;
+
+            }else if(Math.abs(deltaAngleI) < Math.abs(deltaAngleR)){
                 desiredState.speedMetersPerSecond = -desiredState.speedMetersPerSecond;
                 desiredState.angle = Rotation2d.fromRotations((desiredAngleI));
-            }
-        }
 
+        }
         return desiredState;
     }
 
     public double getRotationBound(double angle){
-        if(angle > 1){
+        if(angle > 0.5){
             angle = angle - 1;
             return getRotationBound(angle);
-        }else if(angle < -1){
+        }else if(angle < -0.5){
             angle = angle + 1;
             return getRotationBound(angle);
         }else{
@@ -204,7 +191,9 @@ public class RevSwerveModule implements SwerveModule
         //System.out.println("Angle CANCODER Encoder: " + moduleNumber + '\n' + ' ' + angleEncoder.getPosition().getValueAsDouble());
 
         desiredState = optimizeAngle(desiredState, getState().angle);
-        
+
+        SmartDashboard.putNumber("Target Angle", desiredState.angle.getRotations());
+
         setAngle(desiredState);
         setSpeed(desiredState, isOpenLoop);
     }
@@ -233,13 +222,13 @@ public class RevSwerveModule implements SwerveModule
 
     private void setAngle(SwerveModuleState desiredState)
     {
-        /*
+        
         if(Math.abs(desiredState.speedMetersPerSecond) <= (RevSwerveConfig.maxSpeed * 0.01)) 
         {
             mAngleMotor.stopMotor();
             return;
         }
-        */
+        
         //Prevent rotating module if speed is less then 1%. Prevents Jittering.       
         SparkClosedLoopController controller = mAngleMotor.getClosedLoopController();
         
