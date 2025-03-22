@@ -1,32 +1,23 @@
 package frc.robot;
 
-import java.util.List;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 //import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 //import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.robot.commands.*;
 import frc.robot.robot.subsystems.IntakeSubsystem;
 import frc.robot.robot.subsystems.LiftSubsystem;
 import frc.robot.robot.subsystems.swerve.rev.RevSwerve;
-import frc.robot.robot.subsystems.swerve.rev.RevSwerveConfig;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -35,6 +26,8 @@ import frc.robot.robot.subsystems.swerve.rev.RevSwerveConfig;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+    private final SendableChooser<Command> autoChooser;
+
     /* Controllers */
     private final XboxController driveController = new XboxController(0);
     private final XboxController auxiliaryController = new XboxController(1);   
@@ -62,6 +55,8 @@ public class RobotContainer {
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
 
+        autoChooser = AutoBuilder.buildAutoChooser();
+
         liftSubsystem.setDefaultCommand(new Lift(liftSubsystem, auxiliaryController));
 
         Timer.delay(1.0);
@@ -79,6 +74,8 @@ public class RobotContainer {
 
         // Configure the button bindings
         configureButtonBindings();
+
+        SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
     /**
@@ -105,54 +102,9 @@ public class RobotContainer {
      *
      * @return the command to run in autonomous
      */
+
     public Command getAutonomousCommand() {
-        /* 
-        return new SequentialCommandGroup(
-            Commands.runOnce(() -> s_Swerve.setModuleStates(
-                new SwerveModuleState[]{
-                    new SwerveModuleState(1, new Rotation2d()),
-                    new SwerveModuleState(1, new Rotation2d()),
-                    new SwerveModuleState(1, new Rotation2d()),
-                    new SwerveModuleState(1, new Rotation2d())
-                }
-            ))
-        );
-        */
-
-        Timer.delay(1.0);
-        s_Swerve.resetModulesToAbsolute();
-
-        TrajectoryConfig trajectoryConfig = new TrajectoryConfig
-            (RevSwerveConfig.maxAngularVelocity, RevSwerveConfig.maxSpeed)
-            .setKinematics(RevSwerveConfig.swerveKinematics);
-
-        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(0,0, new Rotation2d(0)),
-            List.of(
-                new Translation2d(-1,0)
-            ),
-            new Pose2d(-2,0, Rotation2d.fromDegrees(180)),
-            trajectoryConfig);
-
-        PIDController xController = new PIDController(0.01, 0, 0.05);
-        PIDController yController = new PIDController(0.01, 0, 0.05);
-        ProfiledPIDController thetaController = new ProfiledPIDController(0.1, 0, 0.0, new TrapezoidProfile.Constraints(5, 10));
-        thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-        SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-            trajectory,
-            s_Swerve::getPose,
-            RevSwerveConfig.swerveKinematics,
-            xController,
-            yController,
-            thetaController,
-            s_Swerve::setModuleStates,
-            s_Swerve);
-
-        return new SequentialCommandGroup(
-            new InstantCommand(() -> s_Swerve.resetOdometry(trajectory.getInitialPose())),
-            swerveControllerCommand,
-            new InstantCommand(() -> s_Swerve.stopMotor())
-        );
+        //return autoChooser.getSelected();
+        return new PathPlannerAuto("Off the Line");
     }
 }

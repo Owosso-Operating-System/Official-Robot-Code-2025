@@ -93,6 +93,7 @@ public class RevSwerveModule implements SwerveModule
         resetToAbsolute();
         //mDriveMotor.burnFlash();
         //mAngleMotor.burnFlash();    
+        
     }
 
     private void configAngleMotor()
