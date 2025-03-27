@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Off the Line"
+            "pathName": "RED Off the Line"
           }
         },
         {
@@ -20,6 +20,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Basic",
   "choreoAuto": false
 }
