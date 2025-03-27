@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.robot.commands.*;
 import frc.robot.robot.subsystems.IntakeSubsystem;
+import frc.robot.robot.subsystems.LiftActuatorSubsystem;
 import frc.robot.robot.subsystems.LiftSubsystem;
 import frc.robot.robot.subsystems.swerve.rev.RevSwerve;
 
@@ -51,6 +52,7 @@ public class RobotContainer {
     private final RevSwerve s_Swerve = new RevSwerve();
     private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();    
     private final LiftSubsystem liftSubsystem = new LiftSubsystem();
+    private final LiftActuatorSubsystem liftActuatorSubsystem = new LiftActuatorSubsystem();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -58,6 +60,7 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser();
 
         liftSubsystem.setDefaultCommand(new Lift(liftSubsystem, auxiliaryController));
+        liftActuatorSubsystem.setDefaultCommand(new LiftActuator(liftActuatorSubsystem, driveController));
 
         Timer.delay(1.0);
         s_Swerve.resetModulesToAbsolute();
@@ -104,7 +107,7 @@ public class RobotContainer {
      */
 
     public Command getAutonomousCommand() {
-        //return autoChooser.getSelected();
-        return new PathPlannerAuto("Off the Line");
+        return autoChooser.getSelected();
+        //return new PathPlannerAuto("Off the Line");
     }
 }
